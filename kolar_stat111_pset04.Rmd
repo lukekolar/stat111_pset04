@@ -1,0 +1,22 @@
+---
+title: "Stat 111 PSET 04"
+author: "Luke Kolar (collaborated with Luke Bailey)"
+header-includes:
+   - \usepackage{amsmath}
+output: 
+  pdf_document:
+    includes:
+      in_header: packages.sty
+---
+```{r, include = F, eval = T}
+library(tidyverse)
+library(janitor)
+```
+
+```{r, include = F}
+knitr::opts_chunk$set(eval = T)
+```
+
+# 1a) 
+
+**i)** 

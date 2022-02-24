@@ -1,0 +1,303 @@
+---
+title: 'Stat 111 Homework 4, Spring 2022'
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+header-includes:
+- \newcommand{\benum}{\begin{enumerate}}
+- \newcommand{\eenum}{\end{enumerate}}
+- \newcommand{\noin}{\noindent}
+- \newcommand{\Bern}{\textnormal{Bern}}
+- \newcommand{\Bin}{\textnormal{Bin}}
+- \newcommand{\Pois}{\textnormal{Pois}}
+- \newcommand{\Geom}{\textnormal{Geom}}
+- \newcommand{\FS}{\textnormal{FS}}
+- \newcommand{\HGeom}{\textnormal{HGeom}}
+- \newcommand{\NBin}{\textnormal{NBin}}
+- \newcommand{\Beta}{\textnormal{Beta}}
+- \newcommand{\Gam}{\textnormal{Gamma}}
+- \newcommand{\N}{\mathcal{N}}
+- \newcommand{\Expo}{\textnormal{Expo}}
+- \newcommand{\Unif}{\textnormal{Unif}}
+- \newcommand{\SD}{\textnormal{SD}}
+- \newcommand{\var}{\textnormal{Var}}
+- \newcommand{\Var}{\textnormal{Var}}
+- \newcommand{\cov}{\textnormal{Cov}}
+- \newcommand{\cor}{\textnormal{Corr}}
+- \newcommand{\logit}{\textnormal{logit}}
+- \newcommand{\iid}{\overset{i.i.d}{\sim}}
+- \newcommand{\Bias}{\textnormal{Bias}}
+- \newcommand{\MSE}{\textnormal{MSE}}
+- \newcommand{\mubold}{\mbox{\boldmath$\mu$}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+\noin \textbf{Due}: Friday 2/25 at 5:00 pm,  as a PDF via the [course webpage](https://canvas.harvard.edu/courses/82373). Please check carefully to make sure you upload the correct file. Your submission must be a single
+PDF file (except possibly for including R or other code as a separate file; the *outputs* such as plots and summary statistics must be in your main PDF), no more than $20$ MB in size. It can be typeset or scanned, but must be clear and easily legible (not blurry or faint) and correctly rotated (e.g., not upside down). No submissions on paper or by email will be accepted, and no extensions will be granted aside from the Monday extensions described in the syllabus. 
+
+You can typeset, write on an iPad or other tablet, handwrite on paper (and then scan), or use a combination
+of these methods. If you would like to typeset your work, we recommend using LaTeX (a nice online interface for which is [Overleaf](https://www.overleaf.com)) or
+[R Markdown](https://rmarkdown.rstudio.com). If you would like to handwrite your work you can use a scanner app such as the free app [Adobe Scan](https://acrobat.adobe.com/us/en/mobile/scanner-app.html). If you are using a phone to scan, please use a scanner app rather than just taking pictures with the camera. Please arrange your PDF so that everything is where it should be rather than, for example, having a lot of handwritten pages followed by all the plots at the end.
+
+\bigskip
+
+These questions mostly focus on material from Chapter 3 and 4 of the Lecture Notes.
+
+\bigskip
+
+\noindent 1. [Method of moments.] \ Example 3.5.6 of the Stat111 book says that if $Y_{1},...,Y_{n}$ are i.i.d. and $\mathrm{E}[Y_{1}^{4}]$ exists, then $S^{2}=(n-1)^{-1}\sum_{j=1}^{n}(Y_{j}-\overline{Y})^{2}$ has the asymptotic distribution 
+\begin{equation*}
+\sqrt{n} \left\{ S^{2}-\mathrm{Var}(Y_{1}) \right\} \overset{d}{\rightarrow} N(0,\mathrm{Var}((Y_{1}-\mathrm{E}[Y_{1}])^{2})),
+\end{equation*}
+as $n$ gets large. \ 
+
+Imani remarks to you that this is a nice result but she cares about $\mathrm{sd}(Y_{1})$ as standard deviations are used in applied statistical practice while $\mathrm{Var}(Y_{1})$ rarely are. \ So Imani challenges you to find the asymptotic distribution of the estimator of the standard deviation 
+\begin{equation*}
+S=\sqrt{S^{2}}.
+\end{equation*}
+
+(a) Derive the result 
+\begin{equation*}
+\sqrt{n}\left\{ S-\mathrm{sd}(Y_{1})\right\} \overset{d}{\rightarrow }N(0,\mathrm{AsyVar}),
+\end{equation*}
+spelling out what is $\mathrm{AsyVar}$.
+
+\medskip
+
+(b) What is the approximate standard error of $S$.
+
+\medskip
+
+(c) How can you consistently estimate $\mathrm{AsyVar}$ in equation (a) from data? 
+
+\bigskip
+
+\noindent 2. The \texttt{predictBinary.csv} is a dataset made of pairs $(x_{1},y_{1}),...,(x_{n},y_{n})$, where we call $x_{j}$ the $j$-th predictor and $y_{j}$ the $j$-th outcome. Our interest is in predicting outcomes from predictors. \
+
+David suggests modeling the prediction problem using the \textquotedblleft logistic regression model \textquotedblright which states that 
+\begin{equation*}
+Y_{j}|(\mathbf{X}=\mathbf{x})\overset{indep}{\sim}Bernoulli(p_{j}),\quad p_{j}=\frac{\exp \left( \theta x_{j}\right) }{1+\exp \left( \theta
+x_{j}\right) },\quad j=1,...,n,
+\end{equation*}
+where $\mathbf{X}=(X_{1},...,X_{n})$ and $\mathbf{x}=(x_{1},...,x_{n})$. 
+
+\medskip
+
+\noindent (a) Prove that the odds are 
+\begin{equation*}
+\frac{p_{j}}{1-p_{j}}=\exp (\theta x_{j}),
+\end{equation*}
+so the log of the odds are $\theta x_{j}$.
+
+\medskip
+
+\noindent (b) The (conditional) likelihood for the outcomes given predictors is 
+\begin{equation*}
+L(\theta ;\mathbf{y}|\mathbf{x})=\prod\limits_{j=1}^{n}P(Y_{j}=y_{j}|%
+\mathbf{X}=\mathbf{x}).
+\end{equation*}
+where $\mathbf{y}=(y_{1},...,y_{n})$. \ Simplify the corresponding
+log-likelihood into terms which involve $\theta y_{j}x_{j}$ and $\exp\left(\theta x_{j}\right)$. 
+
+\medskip
+
+\noindent (c) Show the score is 
+\begin{equation*}
+s(\theta ;\mathbf{y}|\mathbf{x)=}\frac{\partial \log L(\theta;\mathbf{y}\mid\mathbf{x})}{\partial \theta} = \sum_{j=1}^{n}x_{j}(y_{j}-p_{j})
+\end{equation*}
+for this problem.
+
+\medskip
+
+\noindent (d) What is the 
+\begin{equation*}
+s^{\prime }(\theta ;\mathbf{y}|\mathbf{x)=}\frac{\partial ^{2}\log L(\theta; \mathbf{y} \mid \mathbf{x})}{\partial \theta ^{2}}?
+\end{equation*}
+
+\medskip
+
+\noindent (e) Is the log-likelihood convex in $\theta$, concave in $\theta$ or neither (convex or concave functions are relatively easy to numerically maximize or minimize.)
+
+\medskip
+
+\noindent (f) [Background: Sometimes in numerical calculations we need to find a numerical value $\widehat{x}$ which solves the equation 
+\begin{equation*}
+0=g(\widehat{x}),
+\end{equation*}
+where $g$ is some univariate continuously differentiable function of the univariate $x$. \ One approach to finding $\widehat{x}$ is to take some initial guess $x^{[0]}$ and use it to perform a Taylor expansion 
+\begin{equation*}
+0=g(\widehat{x})\simeq g(x^{[0]})+g^{\prime}(x^{[0]})(\widehat{x}-x^{[0]}).
+\end{equation*}
+
+Then, solving 
+\begin{equation*}
+\widehat{x}-x^{[0]}\simeq \left\{ -g^{\prime }(x^{[0]})\right\}
+^{-1}g(x^{[0]}).
+\end{equation*}
+
+Replacing $\widehat{x}$ by $x^{[1]}$ yields the iteration 
+\begin{equation*}
+x^{[1]}=x^{[0]}+\left\{ -g^{\prime }(x^{[0]})\right\} ^{-1}g(x^{[0]}).
+\end{equation*}
+
+Having done this once, we can iterate this procedure yielding 
+\begin{equation*}
+x^{[i]}=x^{[i-1]}+\left\{ -g^{\prime }(x^{[i-1]})\right\}
+^{-1}g(x^{[i-1]}),\quad i=1,2,\ldots
+\end{equation*}
+getting a better and better solution. \ This is called Newton's method.] \
+Here implement on your computer the iterative scheme 
+\begin{equation*}
+\theta ^{\lbrack i]}=\theta ^{\lbrack i-1]}+\left\{ -s^{\prime}(\theta
+^{\lbrack i-1]};\mathbf{y}|\mathbf{x)}\right\} ^{-1}s(\theta ^{\lbrack i-1]}; \mathbf{y}|\mathbf{x),}\quad i=1,2,...\text{,}
+\end{equation*}
+where $\theta ^{\lbrack 0]}=0$ (iterate this scheme until the sequence $\theta ^{\lbrack 0]},\theta ^{\lbrack 1]},\theta ^{\lbrack 2]},...$ stops changing, e.g. the first 5 digits dont change) for the above data to numerically find the MLE. \ What is the numerical value of the MLE $\widehat{\theta }$ and how many iterations did the scheme take until it converges? \ 
+
+\medskip
+
+\noindent (g) Plot the fitted values 
+\begin{equation*}
+\widehat{p}_{j}=\frac{\exp \left( \widehat{\theta }x_{j}\right) }{1+\exp \left( \widehat{\theta }x_{j}\right) }
+\end{equation*}
+against $x_{j}$, for $j=1,2,...,n$. \ Is the slope of the curve positive or negative?
+
+\medskip
+
+\noindent (h) Use the notion of Fisher information $I_{\mathbf{Y}|\left( \mathbf{Y}=\mathbf{x}\right)}$ to give a numerical estimate of $SE(\widehat{\theta})$.
+
+\bigskip
+
+\noindent 3. [Likelihood] Suppose $y_{1},...,y_{n}$ is the sequence of daily percentage changes in the S\&P500 index recorded in the file \texttt{SP500time.csv} for 1 Jan 2015 until 17 Feb 2022. \ 
+
+\medskip
+
+\noindent (a) Plot the data against time. \ 
+
+\medskip
+
+\noindent (b) Rob suggests the parametric model of the sequence of returns (the mean
+return is low as the time elapsed is only a day each period, so Rob sets it
+to zero here to focus on ideas) \ 
+\begin{equation*}
+Y_{j}|Y_{1},...,Y_{j-1},\theta \overset{indep}{\sim }N(0,\sigma
+_{j}^{2}),\quad j=1\ldots,n
+\end{equation*}
+where 
+\begin{equation*}
+\sigma _{j}^{2}=\theta \sigma _{j-1}^{2}+(1-\theta )Y_{j-1}^{2},\quad
+j=2,\ldots,n,
+\end{equation*}
+and $\sigma _{1}^{2}=1.0$. Here $\sigma _{j}^{2}$ is the weighted average of 
+$\sigma _{j-1}^{2}$ and the new squared datapoint $Y_{j-1}^{2}$, we are
+squaring as the focus is on the variance. \ The parameter $\theta \in \lbrack 0,1)$, is the weight and we will regard it as the estimand.
+
+\medskip
+
+(i) Use the prediction decomposition (Example 2.1.5 and 4.8.3 in the Stat111
+book) to express the conditional log-likelihood%
+\begin{equation*}
+\log L(\theta )=\log f(y_{2},...,y_{n}|y_{1},\theta ),
+\end{equation*}
+in terms of $y_{1},...,y_{n}$ and $\sigma _{1},...,\sigma _{n}$ which are functions of $\theta$.
+
+\medskip
+
+(ii) Plot the likelihood against $\log L(\theta)$ for $\theta \in \lbrack 0.8,0.99]$.
+
+[hint: you can by looping over different values of $\theta$ with a fine grid, e.g. 
+\begin{verbatim}
+for (j in (1:100)){
+  theta = 0.8 + 0.19*(j/100);
+  compute likelihood here...
+}
+\end{verbatim}
+
+\medskip
+
+(iii) Roughly compute the ML estimate for this problem (it will be close to, but below, 1)? \ Write it as $\widehat{\theta}$. [hint: as we only need a rough answer, you can by looping over different values of $\theta$ with a fine grid, recording the $\theta$ with highest log-likelihood. Alternatively you can use a numerical optimization routine].
+
+\medskip
+
+\noindent (c) Compute the sequence 
+\begin{equation*}
+\widehat{\sigma }_{j}^{2}=\widehat{\theta }\widehat{\sigma }_{j-1}^{2}+(1-%
+\widehat{\theta })y_{j-1}^{2},\quad j=2,...,n,
+\end{equation*}
+and $\widehat{\sigma }_{1}^{2}=1.0$.
+
+\medskip
+
+(i) Plot $\widehat{\sigma }_{1},...,\widehat{\sigma }_{n}$ against time. \ In econometrics $\widehat{\sigma }_{j}$ is often called the $j$-th period's volatility. \ 
+
+\medskip
+
+(ii) What is 
+\begin{equation*}
+\widehat{Q}_{\sigma }(0.01),\widehat{Q}_{\sigma}(1/2),\widehat{Q}_{\sigma}(0.99)
+\end{equation*}
+the sample 0.01, 0.5 and 0.99 estimated quantiles of the sequence $\widehat{\sigma }_{1},...,\widehat{\sigma }_{n}$. \ This shows 98\% of the
+volatilities live between [$\widehat{Q}_{\sigma}(0.01),\widehat{Q}_{\sigma}(0.99)$], while the volatilities are scattered around $\widehat{Q}_{\sigma}(1/2)$.
+
+\medskip
+
+(iii) Let $\widehat{u}_{j}=y_{j}/\widehat{\sigma }_{j}$, for $j=1,...,n$. Plot $\widehat{u}_{1},...,\widehat{u}_{n}$\ against time.
+
+\medskip
+
+(iv) Let us compare the plot from (c)(iii) to the plot from (a). \ Has Rob's
+model removed the obvious sequential dependence in the data?
+
+\bigskip
+
+\noindent 4. [This continues some aspects of HW3.1, which was on estimating the odds] \ Suppose $Y_{1},..,Y_{n}$ are i.i.d. which we model as Bernoulli random variables each with $P(Y_{1}=1|p)=p$, where $p\in \lbrack 0,1]$. \ Write the estimand as $p^{\ast }$.
+
+\medskip
+
+\noindent (a) What is the log-likelihood function 
+\begin{equation*}
+\log L(p;y_{1},...,y_{n})?
+\end{equation*}
+
+\medskip
+
+\noindent (b) What is the score for $p$? \ 
+
+\medskip
+
+\noindent (c) What is MLE of $p$, written $\widehat{p}$?
+
+\medskip
+
+\noindent (d) What is the Fisher information in the sample about $p$?
+
+\medskip
+
+\noindent (e) What is the Fisher information in a single data point about $p$?
+
+\medskip
+
+\noindent (f) What is 
+\begin{equation*}
+D_{KL}(F_{\mathbf{Y}|p^{\ast }}||F_{\mathbf{Y}|p})?
+\end{equation*}
+
+\medskip
+
+\noindent (g) Show directly $D_{KL}(F_{\mathbf{Y}|p^{\ast }}||F_{\mathbf{Y}|p})$ in (v) is minimized when $p$ is set to be $p^{\ast }$ (we know this result holds generally, but it is helpful to go through the special case).
+
+\medskip
+
+\noindent (h) Why is 
+\begin{equation*}
+D_{KL}(F_{\mathbf{Y}|p^{\ast }}||F_{\mathbf{Y}|p})=n\times D_{KL}(F_{Y_{1}|p^{\ast }}||F_{Y_{1}|p}),
+\end{equation*}
+for this specific problem?
+

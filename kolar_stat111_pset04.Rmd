@@ -1,6 +1,6 @@
 ---
 title: "Stat 111 PSET 04"
-author: "Luke Kolar (collaborated with Luke Bailey)"
+author: "Luke Kolar"
 header-includes:
    - \usepackage{amsmath}
 output: 
@@ -19,4 +19,422 @@ knitr::opts_chunk$set(eval = T)
 
 # 1a) 
 
+By the Delta method, if $g(x) = \sqrt{x}$ and $(g'(x))^{2} = \frac{1}{4x}$ then:
+
+\begin{align*}
+\sqrt{n}\{ S-\mathrm{sd}(Y_{1})\} &\overset{d}{\rightarrow} N(0,g'[\mathrm{Var}(Y_{1})]^{2}\times\mathrm{Var}((Y_{1}-\mathrm{E}[Y_{1}])^{2})) \\
+\sqrt{n}\{ S-\mathrm{sd}(Y_{1})\} &\overset{d}{\rightarrow} N(0, \frac{1}{4\mathrm{Var}(Y_{1})} \times\mathrm{Var}((Y_{1}-\mathrm{E}[Y_{1}])^{2})) \\
+\sqrt{n}\{ S-\mathrm{sd}(Y_{1})\} &\overset{d}{\rightarrow} N(0, \frac{\mathrm{Var}((Y_{1}-\mathrm{E}[Y_{1}])^{2})}{4\mathrm{Var}(Y_{1})})
+\end{align*}
+
+Therefore:
+
+\begin{center}
+$\mathrm{AsyVar} = \frac{\mathrm{Var}((Y_{1}-\mathrm{E}[Y_{1}])^{2})}{4\mathrm{Var}(Y_{1})}$
+\end{center}
+
+# 1b) 
+
+We have standard error formula $\mathrm{SE}(\hat{\theta}) = \sqrt{\mathrm{Var}(\hat{\theta})}$, so:
+
+\begin{align*}
+\mathrm{SE}(S) &= \sqrt{\frac{\mathrm{AsyVar}}{n}} \\
+&= \sqrt{\frac{\mathrm{Var}((Y_{1}-\mathrm{E}[Y_{1}])^{2})}{4n\mathrm{Var}(Y_{1})}}
+\end{align*}
+
+# 1c) 
+
+To estimate $\mathrm{AsyVar}$ we can break our result into two parts, with $\alpha$ being our numerator and $\beta$ as the denominator [note: I am unsure if these symbols are "off-limits"; apologies if so]. We have: 
+
+\begin{align*}
+\alpha &= \mathrm{Var}((Y_{1}-\mathrm{E}[\overline{Y}])^{2}) \\ 
+\beta &= 4\mathrm{Var}(Y_{1})
+\end{align*}
+
+We need to simplify $\alpha$:
+
+\begin{align*}
+\alpha &= \mathrm{Var}((Y_{1}-\mathrm{E}[\overline{Y}])^{2}) \\ 
+&= \mathrm{E}[(Y_{1}-\mathrm{E}[\overline{Y}])^{4}] - \mathrm{E}[(Y_{1}-\mathrm{E}[\overline{Y}])^{2}]^{2} \\
+&= \mathrm{E}[(Y_{1}-\mathrm{E}[\overline{Y}]^{4}] - \mathrm{Var}(Y_{1})^{2}
+\end{align*}
+
+Now we use Law of Large Numbers to estimate:
+
+\begin{align*}
+\hat{\alpha} &= \frac{\sum_{i=1}^{n}(Y_{i} - \mathrm{E}[\overline{Y}])^{4}}{n} - S^{4} \\
+\hat{\beta} &= 4S^{2}
+\end{align*}
+
+So we can consistently estimate $\mathrm{AsyVar}$ with:
+
+\begin{center}
+$\hat{\mathrm{AsyVar}} = \sqrt{\frac{\frac{1}{n}\sum_{i=1}^{n}(Y_{i} - \mathrm{E}[\overline{Y}])^{4} - S^{4}}{4S^{2}}}$
+\end{center}
+
+# 2a) 
+
+\begin{center} 
+$p_{j} = \frac{\exp (\theta x_{j})}{1 + \exp (\theta x_{j})}$
+
+$p_{j}(1 + \exp (\theta x_{j})) = \exp (\theta x_{j})$
+
+$p_{j} + p_{j}(\exp (\theta x_{j})) = \exp (\theta x_{j})$
+
+$p_{j} = \exp (\theta x_{j}) - p_{j}(\exp (\theta x_{j}))$
+
+$\frac{p_{j}}{1 - p_{j}} = \exp (\theta x_{j})$
+
+$\log(\frac{p_{j}}{1 - p_{j}}) = \theta x_{j}$
+\end{center} 
+
+# 2b) 
+
+We have likelihood function:
+
+\begin{align*}
+L(\theta;\mathrm{\textbf{y|x}}) &= \prod_{i=1}^{n}(p_{i}^{y_{i}})(1 - p_{i})^{(1 - y_{i})} \\
+&= \prod_{i=1}^{n}(p_{i}^{y_{i}})\frac{1 - p_{i}}{(1 - p_{i})^{y_{i}}} \\
+&= \prod_{i=1}^{n}(\frac{p_{i}}{1 - p_{i}})^{y_{i}}(1 - p_{i}) \\
+&= \prod_{i=1}^{n}\exp (\theta y_{i}x_{i})(1 - p_{i})
+\end{align*}
+
+So log-likelihood is:
+
+\begin{align*}
+\log L(\theta;\mathrm{\textbf{y|x}}) &= \sum_{i=1}^{n}(\theta y_{i}x_{i} + \log (1 - p_{i})) \\
+&= \sum_{i=1}^{n}(\theta y_{i}x_{i} + \log (1 - \frac{\exp (\theta x_{i})}{1 + \exp (\theta x_{i})})) \\
+&= \sum_{i=1}^{n}(\theta y_{i}x_{i} + \log (\frac{1}{1 + \exp (\theta x_{i})})) \\
+&= \sum_{i=1}^{n}(\theta y_{i}x_{i} + \log (1) - \log(1 + \exp (\theta x_{i}))) \\
+&= \sum_{i=1}^{n}(\theta y_{i}x_{i} - \log(1 + \exp (\theta x_{i})))
+\end{align*}
+
+# 2c) 
+
+\begin{align*}
+s(\theta;\mathrm{\textbf{y|x}}) &= \frac{\partial \log L}{\partial \theta} \\
+&= \sum_{i=1}^{n}(\frac{\partial}{\partial \theta}\theta y_{i}x_{i} - \frac{\partial}{\partial \theta}\log(1 + \exp (\theta x_{i}))) \\
+&= \sum_{i=1}^{n}(y_{i}x_{i} - \frac{x_{i}\exp (\theta x_{i})}{1 + \exp (\theta x_{i})}) \\
+&= \sum_{i=1}^{n}x_{i}(y_{i} - \frac{\exp (\theta x_{i})}{1 + \exp (\theta x_{i})}) \\
+&= \sum_{i=1}^{n}x_{i}(y_{i} - p_{i})
+\end{align*}
+
+# 2d) 
+
+\begin{align*}
+s'(\theta;\mathrm{\textbf{y|x}}) &= \frac{\partial^{2} \log L}{\partial \theta^{2}} \\
+&= \sum_{i=1}^{n}x_{i}(\frac{\partial}{\partial \theta}y_{i} - \frac{\partial}{\partial \theta}\frac{\exp (\theta x_{i})}{1 + \exp (\theta x_{i})}) \\
+&= -\sum_{i=1}^{n}x_{i}(\frac{\partial}{\partial \theta}\frac{\exp (\theta x_{i})}{1 + \exp (\theta x_{i})}) \\ 
+&= -\sum_{i=1}^{n}x_{i}(\frac{x_{i}\exp (\theta x_{i})}{1 + \exp (\theta x_{i})} + \frac{- x_{i}\exp (\theta x_{i})^{2}}{(1 + \exp (\theta x_{i}))^{2}}) \\
+&= -\sum_{i=1}^{n}x_{i}(x_{i}p_{i} - x_{i}p_{i}) \\
+&= -\sum_{i=1}^{n}x_{i}^{2}p_{i}(1 - p_{i})
+\end{align*}
+
+# 2e)
+
+As long as the predictors ($x_{1},..., x_{n}$) aren't all zero, the function is **concave** because its second derivative found in part d is always less than zero.
+
+# 2f) 
+
+```{r, message = F, warning = F}
+
+data <- read.csv("predictBinary.csv")
+
+newtons_method <- function(num) {
+  
+  df <- data.frame(rep = rep(0, num),
+                   MLE_hat = rep(0, num))
+  
+  for (i in 1:num){
+    ifelse(i == 1, theta <- 0, theta <- new_theta)
+    
+    prob <- exp(theta * data$X) / (1 + exp(theta * data$X))
+    score <- sum(data$X * (data$Y - prob))
+    score_deriv <- (-sum((data$X)^(2) * prob * (1 - prob)))
+    
+    new_theta <- theta + score / (-score_deriv)
+    
+    df$rep[i] = i
+    df$MLE_hat[i] = new_theta
+  }
+  
+  return(df)
+}
+
+head(newtons_method(15)$MLE_hat, 7)
+
+```
+
+Newton's Method converges to an MLE $\hat{\theta}$ approximation of **1.0631632** by the sixth iteration.
+
+# 2g) 
+
+```{r, message = F, warning = F}
+
+data$prob <- exp(1.0631632 * data$X) / (1 + exp(1.0631632 * data$X))
+
+ggplot(data, aes(x = X, y = prob))+ geom_point() + 
+  labs(main = "Fitted probabilities for predictors",
+       x = "Predictors", y = "Probability") + theme_bw()
+
+```
+
+The slope is positive at all points. It appears to have an inflection point at $p = 0.5$.
+
+# 2h) 
+
+We know $\mathrm{SE}(\hat{\theta}) = \sqrt{\mathrm{Var}(\hat{\theta})}$, and page 111 of the lecture notes tells us that variance of an asymptotic distribution of $\hat{\theta}$ is 1 over the Fisher information. So:
+
+\begin{center}
+$\mathrm{SE}(\hat{\theta}) = \sqrt{\frac{1}{\mathcal{I}(\hat{\theta})}}$
+\end{center}
+
+```{r}
+
+data$prob <- exp(1.0631632 * data$X) / (1 + exp(1.0631632 * data$X))
+score <- sum(data$X * (data$Y - data$prob))
+score_deriv <- (sum((data$X)^(2) * data$prob * (1 - data$prob)))
+
+1 / (score_deriv^0.5)
+
+```
+
+Our estimate is **0.1687642**.
+
+# 3a) 
+
+```{r}
+
+sp <- read.csv("SP500time.csv")
+
+year_days <- function(year){sp %>% filter()}
+
+
+ggplot(sp, aes(x = X, y = Y)) + geom_point() + 
+  xlim(1, 1794) + 
+  scale_x_continuous(breaks = c(1, 1 + 251*seq(1:7)),
+                     labels = c(2015:2022)) + 
+  labs(title = "S&P Returns, 01/01/2015 to 17/02/2022",
+       x = "Date", y = "Percent change") + 
+  theme_bw()
+
+```
+
+# 3b) 
+
 **i)** 
+
+Per example 4.8.3 in the textbook, we have:
+
+\begin{center}
+$\log L(\theta ) = \log f(y_{2},...,y_{n}|y_{1},\theta)$
+
+$= \log P(Y_{2} = y_{2},...,Y_{n} = y_{n}|Y_{1} = y_{1},\theta)$
+
+$= \log \sum_{i=2}^{n}{P(Y_{i} = y_{i}|Y_{i-1} = y_{i-1},...,Y_{1} = y_{1},\theta)}$
+
+$= \log \sum_{i=2}^{n}{P(Y_{i} = y_{i}|Y_{i-1} = y_{i-1},...,Y_{1} = y_{1},\theta)}$
+\end{center}
+
+Now we use the normal distribution PDF:
+
+\begin{align*}
+\log L(\theta ) &= \sum_{i=2}^{n}(\log(\frac{1}{\sigma_{i} \sqrt{2\pi}}) - y^{2}_{i}\mathrm{/}2\sigma^{2}_{i}) \\
+&= c + \sum_{i=2}^{n}(\log(\frac{1}{\sigma_{i}}) - y^{2}_{i}\mathrm{/}2\sigma^{2}_{i})
+\end{align*}
+
+**ii)**
+
+```{r, message = F, warning = F}
+
+logL_df <- data.frame(logL = rep(0, nrow(sp)),
+                      var = rep(0, nrow(sp)))
+
+logL_sum_df <- data.frame(theta = rep(0, 101),
+                          sum = rep(0, 101))
+
+for (j in (1:101)){
+  theta = 0.8 + 0.19*((j - 1) / 100)
+  logL_sum_df$theta[j] = theta
+  var = 1
+  logL_df$var[1] = var
+  
+  for (i in 2:nrow(sp)){
+    var = theta*var + (1 - theta)*((sp$Y[i-1])^2)
+    log_funct = log(1 / (var^0.5)) - ((sp$Y[i])^2 / (2*var))
+    
+    logL_df$var[i] = var
+    logL_df$logL[i] = log_funct
+    
+  }
+  logL_sum_df$sum[j] = sum(logL_df$logL)
+  is.MLE = ifelse(j == 1, -1000, ifelse(is.MLE < logL_sum_df$sum[j],
+                                        logL_sum_df$sum[j], is.MLE))
+}
+
+logL_sum_df %>% ggplot(aes(x = theta, y = sum)) + 
+  geom_line()  + theme_bw() + 
+  labs(title = "Log-likelihood plotted against theta",
+       y = "logL")
+
+```
+
+**iii)**
+
+```{r, message = F, warning = F}
+
+logL_sum_df %>% 
+  filter(is.MLE == sum) %>% 
+  select(theta) %>% pull()
+
+```
+
+Using the variable I called in the last line to my `for` loop from part ii, we can find the MLE: **0.9216**.
+
+# 3c) 
+
+**i)** 
+
+```{r}
+
+sp$vol[1] = 1
+
+for (i in 2:nrow(sp)){
+  ifelse(i == 2, var <- 1, var <- var)
+  
+  var = 0.9216*var + (1 - 0.9216)*((sp$Y[i-1])^2)
+    
+  sp$vol[i] = var^0.5
+}
+
+ggplot(sp, aes(x = X, y = vol)) + geom_line() + 
+  xlim(1, 1794) + 
+  scale_x_continuous(breaks = c(1, 1 + 251*seq(1:7)),
+                     labels = c(2015:2022)) + 
+  labs(x = "", y = "Volatility", 
+       title = "SP500 Volatility, 01/01/2015 to 17/02/2022") + theme_bw()
+
+```
+
+**ii)**
+
+```{r}
+
+quantile(sp$vol, prob = c(0.01, 0.5, 0.99))
+
+```
+
+Quantile estimates printed above.
+
+**iii)**
+
+```{r}
+
+ggplot(sp, aes(x = X, y = Y/vol)) + geom_point() + 
+  xlim(1, 1794) + 
+  scale_x_continuous(breaks = c(1, 1 + 251*seq(1:7)),
+                     labels = c(2015:2022)) + 
+  labs(x = "", y = "Percent change (standardized)", 
+       title = "SP500 Standardized Percent Changes, 01/01/2015 to 17/02/2022") + theme_bw()
+
+```
+
+**iv)** 
+
+The standardized model seems to have removed the large swings in the graph that let to higher variance - particularly around the onset of the pandemic in 2020.
+
+
+# 4a)
+
+We have likelihood function:
+
+\begin{center}
+$L(p;y_{1},...,y_{n}) = \prod_{i=1}^{n}(p^{y_{i}})(1-p)^{(1 - y_{i})}$
+\end{center}
+
+So log-likelihood is: 
+
+\begin{center}
+$\log L(p;y_{1},...,y_{n}) = \sum_{i=1}^{n}(y_{i} \log p ) + \sum_{i=1}^{n}[(1 - y_{i})\log (1 - p)]$
+\end{center}
+
+# 4b) 
+
+\begin{align*}
+s(p) &= \frac{\partial \log L}{\partial p} \\
+&= \frac{1}{p} \sum_{i=1}^{n}(y_{i}) - \frac{1}{1 - p} \sum_{i=1}^{n}(1 - y_{i}) \\
+&= \frac{n\overline{y}}{p} - \frac{n - n\overline{y}}{1 - p}
+\end{align*}
+
+# 4c) 
+
+We set score equal to zero: 
+
+\begin{align*}
+0 &= \frac{n\overline{y}}{p} - \frac{n - n\overline{y}}{1 - p} \\
+\frac{n - n\overline{y}}{1 - p} &= \frac{n\overline{y}}{p} \\
+p(1 - p) \times \frac{n - n\overline{y}}{1 - p} &= \frac{n\overline{y}}{p} \times p(1 - p) \\
+np - np\overline{y} &= n\overline{y} - np\overline{y}
+\end{align*}
+
+Our MLE of $p$ is: 
+
+\begin{center}
+$\hat{p} = \overline{y}$
+\end{center}
+
+# 4d) 
+
+We solve using the information equality (pg. 107 of Stat 111 notes):
+
+\begin{align*}
+\mathcal{I}_{Y} &= -\mathrm{E}[s'(p;Y_{1},...,Y_{n})] \\
+&= -\mathrm{E}[- \frac{n\overline{Y}}{p^{2}} - \frac{n - n\overline{Y}}{(1 - p)^2}] \\
+&= \frac{np}{p^{2}} + \frac{n(1 - p)}{(1 - p)^2} \\
+&= \frac{n}{p} + \frac{n}{(1 - p)} \\
+&= \frac{n}{p(1 - p)}
+\end{align*}
+
+# 4e)
+
+Because the random variables are i.i.d., we just divide by $n$:
+\begin{align*}
+\mathcal{I}_{Y_{1}} &= \frac{1}{p(1 - p)}
+\end{align*}
+
+# 4f)
+
+\begin{align*}
+D_{KL}(F_{\mathbf{Y}|p^{\ast }}||F_{\mathbf{Y}|p}) &= \mathrm{E}[\mathrm{log}L(p^{\ast}; Y_{1},...,Y_{n})] - \mathrm{E}[\mathrm{log}L(p; Y_{1},...,Y_{n})] \\
+&= n[p^{\ast}\mathrm{log}(p^{\ast}) + (1-p^{\ast})\mathrm{log}(1 - p^{\ast}) - p^{\ast}\mathrm{log}(p) - (1-p^{\ast})\mathrm{log}(1 - p)] \\
+&= n[p^{\ast}\mathrm{log}(\frac{p^{\ast}}{p}) + (1-p^{\ast})\mathrm{log}(\frac{1 - p^{\ast}}{1 - p})]
+\end{align*}
+
+# 4g)
+
+We set the derivative of our previous answer equal to zero and solve:
+
+\begin{align*}
+0 = \frac{\partial D_{KL}(F_{\mathbf{Y}|p^{\ast }}||F_{\mathbf{Y}|p})}{\partial p} \\
+&= n[\frac{-p^{\ast}}{p} + \frac{1 - p^{\ast}}{1 - p}] 
+\end{align*}
+
+We see that when $p = p^{\ast}$, the derivative equals zero. But we also need to check the second derivative to make sure this is a local minimum.
+
+\begin{align*}
+0 &< \frac{\partial^{2} D_{KL}(F_{\mathbf{Y}|p^{\ast }}||F_{\mathbf{Y}|p})}{\partial p^{2}} \\
+0 &< n[\frac{p^{\ast}}{p^{2}} + \frac{1 - p^{\ast}}{(1 - p)^{2}}]
+\end{align*}
+
+The second derivative is positive for all $p$, so the function is convex and $p = p^{\ast}$ minimizes.
+
+# 4h) 
+
+We have: 
+
+\begin{center}
+$D_{KL}(F_{\mathrm{Y_1}|p^{\ast }}||F_{\mathrm{Y_1}|p}) = p^{\ast}\mathrm{log}(\frac{p^{\ast}}{p}) + (1-p^{\ast})\mathrm{log}(\frac{1 - p^{\ast}}{1 - p})$
+\end{center}
+
+This was part of our solution to part f. This works by linearity because we take expected value.
+
